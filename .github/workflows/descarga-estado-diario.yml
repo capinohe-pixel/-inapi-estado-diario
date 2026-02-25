@@ -19,14 +19,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-- name: Validar hora local de Chile
-  run: |
-    HORA_CHILE=$(TZ=America/Santiago date +"%H:%M")
-    echo "Hora actual en Chile: ${HORA_CHILE}"
-    # if [ "$HORA_CHILE" != "09:00" ]; then
-    #   echo "No corresponde ejecutar la descarga en este horario."
-    #   exit 0
-    # fi
+      - name: Ejecutar descarga
+        run: python scripts/descargar_estado_diario.py
+
+      - name: Subir PDF como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: estado-diario-inapi
+          path: downloads/
 
       - name: Ejecutar descarga
         run: python scripts/descargar_estado_diario.py
