@@ -1,0 +1,33 @@
+name: Descarga Estado Diario INAPI
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 09:00 hora de Chile puede ser 12:00 o 13:00 UTC según horario de verano/invierno.
+    - cron: "0 12 * * *"
+    - cron: "0 13 * * *"
+
+jobs:
+  descargar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validar hora local de Chile
+        run: |
+          HORA_CHILE=$(TZ=America/Santiago date +"%H:%M")
+          echo "Hora actual en Chile: ${HORA_CHILE}"
+          if [ "$HORA_CHILE" != "09:00" ]; then
+            echo "No corresponde ejecutar la descarga en este horario."
+            exit 0
+          fi
+
+      - name: Ejecutar descarga
+        run: python scripts/descargar_estado_diario.py
