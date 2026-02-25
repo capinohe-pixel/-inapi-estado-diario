@@ -3,9 +3,9 @@ name: Descarga Estado Diario INAPI
 on:
   workflow_dispatch:
   schedule:
-    # 09:00 hora de Chile puede ser 12:00 o 13:00 UTC según horario de verano/invierno.
+    # 09:00 hora de Chile (GitHub usa UTC).
+    # 12:00 UTC suele ser 09:00 Chile en horario estándar; en horario de verano puede cambiar.
     - cron: "0 12 * * *"
-    - cron: "0 13 * * *"
 
 jobs:
   descargar:
@@ -19,18 +19,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Ejecutar descarga
         run: python scripts/descargar_estado_diario.py
 
       - name: Subir PDF como artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: estado-diario-inapi
-          path: downloads/
-
-      - name: Ejecutar descarga
-        run: python scripts/descargar_estado_diario.py
-              - name: Subir PDF como artifact
         uses: actions/upload-artifact@v4
         with:
           name: estado-diario-inapi
